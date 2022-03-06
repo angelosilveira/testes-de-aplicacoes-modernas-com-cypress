@@ -1,0 +1,12 @@
+{
+  "name": "curso-cypress-cod3r",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "cy:open": "cypress open"
+  },
+  "dependencies": {
+    "cypress": "3.6.0"
+  }
+}
