@@ -1,59 +1,73 @@
-/// <references types="cypress" />
+/// <reference types="cypress" />
 
-import { locators } from "../../support/locators";
-import "../../support/commandsContas";
+import loc from '../../support/locators'
+import '../../support/commandsConta'
 
-describe("Should test at a functional level", () => {
-  before(() => {
-    cy.login("angelo@gmail.com", "veizinho");
-    cy.resetApp();
-  });
+describe('Should test at a functional level', () => {
+    before(() => {
+        cy.login('matheus.santos.ciencia@gmail.com', 'a@a')
+    })
 
-  it("Should create an account", () => {
-    cy.acessarMenuConta();
-    cy.inserirConta(`Conta de teste`);
-    cy.get(locators.MESSAGE).should(`contain`, `Conta inserida com sucesso`);
-  });
+    beforeEach(() => {
+        cy.get(loc.MENU.HOME).click()
+        cy.resetApp()
+    })
 
-  it(`Should update an account`, () => {
-    cy.acessarMenuConta();
-    cy.xpath(locators.CONTAS.XP_BTN_ALTERAR).click();
-    cy.get(locators.CONTAS.NOME).clear().type("Conta alterada");
-    cy.get(locators.CONTAS.BTN_SALVAR).click();
-    cy.get(locators.MESSAGE).should(`contain`, `Conta atualizada com sucesso`);
-  });
+    it('Should create an account', () => {
+        cy.acessarMenuConta()
+        cy.inserirConta('Conta teste 1')
+        cy.get(loc.MESSAGE).should('contain', 'Conta inserida com sucesso')
+    })
 
-  it(`Should not have create account with same name`, () => {
-    cy.acessarMenuConta();
-    cy.get(locators.CONTAS.NOME).type("Conta alterada");
-    cy.get(locators.CONTAS.BTN_SALVAR).click();
-    cy.get(locators.MESSAGE).should(`contain`, `code 400`);
-  });
+    it('Should update an account', () => {
+        cy.acessarMenuConta()
+        cy.xpath(loc.CONTAS.FN_XP_BTN_ALTERAR('Conta para alterar')).click()
+        cy.get(loc.CONTAS.NOME)
+            .clear()
+            .type('Conta alterada')
+        cy.get(loc.CONTAS.BTN_SALVAR).click()
+        cy.get(loc.MESSAGE).should('contain', 'Conta atualizada com sucesso')
+        
+    })
 
-  it("Should create and transaction", () => {
-    cy.get(locators.MENU.MOVIMENTACAO).click();
-    cy.get(locators.MOVIMENTACAO.DESCRICAO).type("Desc");
-    cy.get(locators.MOVIMENTACAO.VALOR).type("123");
-    cy.get(locators.MOVIMENTACAO.INTERESSADO).type("Inter");
-    cy.get(locators.MOVIMENTACAO.STATUS).click();
-    cy.get(locators.MOVIMENTACAO.BTN_SALVAR).click();
+    it('Should not create an account with same name', () => {
+        cy.acessarMenuConta()
+        cy.inserirConta('Conta mesmo nome')
+        cy.get(loc.MESSAGE).should('contain', 'code 400')
+    })
 
-    cy.get(locators.MESSAGE).should(`contain`, `sucesso`);
-    cy.get(locators.EXTRATO.LINHAS).should("have.length", 7);
-    cy.xpath(locators.EXTRATO.XP_BUSCA_ELEMENTO).should(`exist`);
-  });
+    it('Should create a transaction', () => {
+        cy.get(loc.MENU.MOVIMENTACAO).click()
+        cy.get(loc.MOVIMENTACAO.DESCRICAO).type('Desc')
+        cy.get(loc.MOVIMENTACAO.VALOR).type('123')
+        cy.get(loc.MOVIMENTACAO.INTERESSADO).type('Inter')
+        cy.get(loc.MOVIMENTACAO.CONTA).select('Conta para movimentacoes')
+        cy.get(loc.MOVIMENTACAO.STATUS).click()
+        cy.get(loc.MOVIMENTACAO.BTN_SALVAR).click()
+    })
 
-  it("Should get balance", () => {
-    cy.get(locators.MENU.HOME).click();
-    cy.xpath(locators.SALDO.FN_XP_SALDO_CONTA("Conta alterada")).should(
-      "contains",
-      "123,00"
-    );
-  });
+    it('Should get balance', () => {
+        cy.get(loc.MENU.HOME).click()
+        cy.xpath(loc.SALDO.FN_XP_SALDO_CONTA('Conta para saldo')).should('contain', '534,00')
 
-  it(`Should remove a transaction`, () => {
-    cy.get(locators.MENU.EXTRATO).click();
-    cy.xpath(locators.EXTRATO.FN_XP_REMOVER_ELEMENTO(`Conta alterada`)).click();
-    cy.get(locators.MESSAGE).should(`contain`, `sucesso`);
-  });
-});
+        cy.get(loc.MENU.EXTRATO).click()
+        cy.xpath(loc.EXTRATO.FN_XP_ALTERAR_ELEMENTO('Movimentacao 1, calculo saldo')).click()
+        //cy.wait(1000)
+        cy.get(loc.MOVIMENTACAO.DESCRICAO).should('have.value', 'Movimentacao 1, calculo saldo')
+
+        cy.get(loc.MOVIMENTACAO.STATUS).click()
+        cy.get(loc.MOVIMENTACAO.BTN_SALVAR).click()
+        cy.get(loc.MESSAGE).should('contain', 'sucesso')
+
+        cy.get(loc.MENU.HOME).click()
+        
+
+    })
+
+    it('Should remove a transaction', () => {
+        cy.get(loc.MENU.EXTRATO).click()
+        cy.xpath(loc.EXTRATO.FN_XP_REMOVER_ELEMENTO('Movimentacao para exclusao')).click()
+        cy.get(loc.MESSAGE).should('contain', 'sucesso')
+    })
+})
+

@@ -14,20 +14,20 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import "./commands";
+import './commands'
+
+require('cypress-xpath')
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
 Cypress.SelectorPlayground.defaults({
-  selectorPriority: [
-    `data-wc`,
-    `data-cy`,
-    `data-test`,
-    `data-testid`,
-    `id`,
-    `class`,
-    `attributes`,
-    `tag`,
-    `nth-child`,
-  ],
-});
+    selectorPriority: ['data-wc', 'data-cy', 'data-test', 'data-testid', 'id', 'class', 'attributes', 'tag', 'nth-child']
+})
+
+
+Cypress.on('uncaught:exception', (err, runnable) => {
+    // returning false here prevents Cypress from
+    // failing the test
+    return false
+  })

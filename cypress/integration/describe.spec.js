@@ -1,15 +1,16 @@
-/// <reference types="cypress" />
+/// <reference types = "cypress"/>
+it('A external test', () => {
+    
 
-describe("Should group tests...", () => {
-  it("A external test...", () => {});
-  it.skip("Skip A external test...", () => {});
-  // it.only("Only A external test...", () => {});
 
-  describe("Should Sub group tests...", () => {
-    it("A external test...", () => {});
-  });
 });
 
-describe.skip("Skip Should Sub group tests...", () => {
-  it("Skip A external test...", () => {});
+
+describe('should group test ', () => {
+    it('A interno test', () => {
+    
+
+
+    });
+    
 });
